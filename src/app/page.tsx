@@ -1,7 +1,9 @@
 import { Button } from "@/components/button";
 import { Dot } from "@/components/dot";
 import { Link } from "@/components/link";
+import { Picture } from "@/components/picture";
 import { SquareCloud } from "@/components/squarecloud";
+import NextLink from "next/link";
 
 export default function Home() {
 	return (
@@ -13,17 +15,22 @@ export default function Home() {
 
 			<section className="flex-1 flex items-center justify-center">
 				<div className="max-w-2xl w-full flex flex-col items-start gap-8">
-					<div className="flex items-baseline">
-						<h1 className="text-lg font-semibold">Hi, I'm João</h1>
-						<p className="text-lg text-primary/70">
-							, but you can call me Bluey
-						</p>
+					<div className="space-y-4">
+						<Picture />
+
+						<div className="flex items-baseline">
+							<h1 className="text-lg font-semibold">Hi, I'm João</h1>
+							<p className="text-lg text-primary/70">
+								, but you can call me{" "}
+								<span className="text-blue-400">Bluey</span>
+							</p>
+						</div>
 					</div>
 
 					<div className="text-secondary max-w-md">
 						<p>
 							I'm a{" "}
-							<span className="font-medium">Frontend Software Engineer</span>,
+							<span className="text-primary">Frontend Software Engineer</span>,
 							based in Brazil.
 						</p>
 
@@ -59,7 +66,9 @@ export default function Home() {
 						</ul>
 					</div>
 
-					<Button>Contact me</Button>
+					<NextLink href="mailto:joao.tonaco@proton.me" passHref>
+						<Button>Contact me</Button>
+					</NextLink>
 				</div>
 			</section>
 		</main>
