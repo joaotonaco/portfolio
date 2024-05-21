@@ -6,7 +6,14 @@ const font = Font({ src: "../../public/fonts/Satoshi-Variable.ttf" });
 
 export const metadata: Metadata = {
 	title: "João Gabriel Tonaco",
-	description: "Front-end developer",
+	description: "Frontend Software Engineer",
+	openGraph: {
+		type: "website",
+	},
+	authors: [
+		{ name: "João Gabriel Tonaco", url: "https://github.com/joaotonaco" },
+	],
+	keywords: ["frontend", "developer", "software"],
 };
 
 export default function RootLayout({
