@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build
+        run: npm run build
+
       - name: Setup Square Cloud
         uses: squarecloudofc/github-action@v2
         with:
