@@ -31,4 +31,4 @@ jobs:
           install-only: true
 
       - name: Commit to Square Cloud
-        run: squarecloud commit ${{ secrets.SQUARECLOUD_APP_ID }} -r
+        run: squarecloud commit -r ${{ secrets.SQUARECLOUD_APP_ID }}
