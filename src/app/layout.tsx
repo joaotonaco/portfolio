@@ -5,7 +5,7 @@ import "./globals.css";
 const font = Font({ src: "../../public/fonts/Satoshi-Variable.ttf" });
 
 export const metadata: Metadata = {
-	title: "João Gabriel Tonaco",
+	title: "joaotonaco.dev",
 	description: "Frontend Software Engineer",
 	openGraph: {
 		type: "website",
