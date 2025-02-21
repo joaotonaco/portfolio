@@ -30,5 +30,8 @@ jobs:
           token: ${{ secrets.SQUARECLOUD_TOKEN }}
           install-only: true
 
+      - name: Login to Square Cloud
+        run: squarecloud login --token ${{ secrets.SQUARECLOUD_TOKEN }}
+
       - name: Commit to Square Cloud
         run: squarecloud commit --restart ${{ secrets.SQUARECLOUD_APP_ID }}
