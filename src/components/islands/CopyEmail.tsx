@@ -34,7 +34,7 @@ export default function CopyEmail({ email, labels }: Props) {
 			onClick={copy}
 			aria-label={label}
 			title={label}
-			className="pressable grid size-9 place-items-center rounded-lg border border-border text-muted hover:bg-subtle hover:text-foreground"
+			className="pressable grid size-10 place-items-center rounded-full border border-border text-muted hover:bg-subtle hover:text-foreground"
 		>
 			<svg
 				aria-hidden="true"
@@ -61,7 +61,7 @@ export default function CopyEmail({ email, labels }: Props) {
 				strokeWidth="2.25"
 				strokeLinecap="round"
 				strokeLinejoin="round"
-				className={`${iconBase} text-emerald-500 ${copied ? "" : hidden}`}
+				className={`${iconBase} text-accent ${copied ? "" : hidden}`}
 			>
 				<path d="m5 12 5 5L20 7" />
 			</svg>

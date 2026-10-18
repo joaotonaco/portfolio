@@ -1,8 +1,9 @@
 import type { ImageMetadata } from "astro";
+import type { Localized } from "@/i18n/ui";
+
 import lunee from "@/assets/logos/luneeapp.png";
 import solufy from "@/assets/logos/solufyapp.png";
 import squarecloud from "@/assets/logos/squarecloudofc.png";
-import type { Localized } from "@/i18n/ui";
 
 export interface Experience {
 	company: string;

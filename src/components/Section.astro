@@ -3,20 +3,37 @@ interface Props {
 	label: string;
 	index: number;
 	id?: string;
+	/** Top offset on desktop so the label lines up with the first row of content. */
+	labelOffset?: string;
 }
 
-const { label, index, id } = Astro.props;
-const headingId = `${id ?? label.toLowerCase()}-heading`;
+const { label, index, id, labelOffset = "lg:pt-1" } = Astro.props;
+const sectionId = id ?? label.toLowerCase();
+// Sections start at stagger step 5, so step - 4 gives 01, 02, ...
+const number = String(index - 4).padStart(2, "0");
 ---
 
 <section
-	aria-labelledby={headingId}
-	class="border-t border-border py-8"
+	id={sectionId}
+	aria-labelledby={`${sectionId}-heading`}
+	class="grid gap-4 border-t border-border py-10 sm:py-12 lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-10"
 	data-enter
 	style={{ "--i": index }}
 >
-	<h2 id={headingId} class="mb-4 font-mono text-xs tracking-wider text-muted uppercase">
+	<h2
+		id={`${sectionId}-heading`}
+		class:list={[
+			"flex h-fit items-center gap-2 font-mono text-xs tracking-wider text-muted uppercase lg:sticky lg:top-10",
+			labelOffset,
+		]}
+	>
+		<span aria-hidden="true" class="text-accent tabular-nums">
+			{number}
+		</span>
+		<span aria-hidden="true" class="h-px w-3 bg-border"></span>
 		{label}
 	</h2>
-	<slot />
+	<div class="min-w-0">
+		<slot />
+	</div>
 </section>

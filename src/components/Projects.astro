@@ -1,7 +1,9 @@
 ---
-import { githubUrl, projects } from "@/data/projects";
 import type { Locale } from "@/i18n/ui";
+
+import { githubUrl, projects } from "@/data/projects";
 import { useTranslations } from "@/i18n/utils";
+
 import Icon from "./Icon.astro";
 import Section from "./Section.astro";
 
@@ -14,7 +16,7 @@ const { locale, index } = Astro.props;
 const t = useTranslations(locale);
 ---
 
-<Section label={t("projects.label")} id="projects" index={index}>
+<Section label={t("projects.label")} id="projects" index={index} labelOffset="lg:pt-2.5">
 	<ul class="-mx-2 space-y-1">
 		{projects.map((project) => (
 			<li>

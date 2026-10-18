@@ -2,6 +2,31 @@
 	"$schema": "./node_modules/oxfmt/configuration_schema.json",
 	"useTabs": true,
 	"printWidth": 100,
+	"sortImports": {
+		"groups": [
+			"type-builtin",
+			"type-external",
+			"type-subpath",
+			"type-internal",
+			"type-parent",
+			"type-sibling",
+			"type-index",
+			{ "newlinesBetween": true },
+			"builtin",
+			"external",
+			{ "newlinesBetween": true },
+			"subpath",
+			"internal",
+			{ "newlinesBetween": true },
+			"parent",
+			"sibling",
+			"index",
+			{ "newlinesBetween": true },
+			"import"
+		],
+		"newlinesBetween": false
+	},
+	"sortPackageJson": true,
 	"ignorePatterns": ["pnpm-lock.yaml", "dist", ".astro"],
 	"astro": true
 }

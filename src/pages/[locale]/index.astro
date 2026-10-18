@@ -1,9 +1,9 @@
 ---
-import About from "@/components/About.astro";
 import Contributions from "@/components/Contributions.astro";
 import Experience from "@/components/Experience.astro";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
+import Hero from "@/components/Hero.astro";
 import Projects from "@/components/Projects.astro";
 import Stack from "@/components/Stack.astro";
 import { locales } from "@/i18n/ui";
@@ -19,13 +19,15 @@ const t = useTranslations(locale);
 ---
 
 <Base locale={locale} title={t("meta.title")} description={t("meta.description")} path="/">
-	<main class="mx-auto w-full max-w-[640px] px-4 sm:px-6">
+	<div class="mx-auto w-full max-w-[920px] px-5 sm:px-8">
 		<Header locale={locale} />
-		<About locale={locale} />
-		<Experience locale={locale} index={2} />
-		<Projects locale={locale} index={3} />
-		<Contributions locale={locale} index={4} />
-		<Stack locale={locale} index={5} />
-		<Footer locale={locale} index={6} />
-	</main>
+		<main>
+			<Hero locale={locale} />
+			<Experience locale={locale} index={5} />
+			<Projects locale={locale} index={6} />
+			<Stack locale={locale} index={7} />
+			<Contributions locale={locale} index={8} />
+		</main>
+		<Footer locale={locale} index={9} />
+	</div>
 </Base>

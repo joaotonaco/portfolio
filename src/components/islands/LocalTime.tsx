@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+
 import { htmlLang, type Locale } from "@/i18n/ui";
 
 interface Props {
@@ -62,10 +63,10 @@ export default function LocalTime({ timeZone, locale, labels }: Props) {
 
 	return (
 		<p
-			className="flex items-center sm:mt-1 gap-1.5 font-mono text-xs text-muted transition-opacity duration-200 ease-out data-[ready=false]:opacity-0"
+			className="flex items-center gap-1.5 font-mono text-xs text-muted transition-opacity duration-200 ease-out data-[ready=false]:opacity-0"
 			data-ready={now !== null}
 		>
-			<span aria-hidden="true" className="size-1.5 rounded-full bg-emerald-500" />
+			<span aria-hidden="true" className="size-1.5 rounded-full bg-accent" />
 			<time className="shrink-0 whitespace-nowrap tabular-nums">{time}</time>
 			<span aria-hidden="true">·</span>
 			<span className="truncate">{relativeLabel(diff, labels)}</span>

@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from "astro:transitions";
+
 import "@/styles/global.css";
 import { htmlLang, type Locale, locales } from "@/i18n/ui";
 import { localizedPath } from "@/i18n/utils";
@@ -71,7 +72,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 		</script>
 		<ClientRouter fallback="none" />
 	</head>
-	<body class="min-h-dvh">
+	<body class="relative isolate min-h-dvh">
 		<slot />
 	</body>
 </html>

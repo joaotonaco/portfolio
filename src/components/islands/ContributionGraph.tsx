@@ -1,6 +1,8 @@
-import { type PointerEvent, useRef, useState } from "react";
-import { htmlLang, type Locale } from "@/i18n/ui";
 import type { ContributionDay } from "@/lib/github";
+
+import { type PointerEvent, useRef, useState } from "react";
+
+import { htmlLang, type Locale } from "@/i18n/ui";
 
 interface Props {
 	weeks: (ContributionDay | null)[][];

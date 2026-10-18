@@ -11,7 +11,7 @@ const { locale, label } = Astro.props;
 const short: Record<Locale, string> = { en: "EN", "pt-br": "PT" };
 ---
 
-<nav aria-label={label} class="flex items-center rounded-lg border border-border p-0.5">
+<nav aria-label={label} class="flex items-center rounded-full bg-subtle p-1">
 	{locales.map((l) => (
 		<a
 			href={localizedPath(l)}
@@ -19,7 +19,7 @@ const short: Record<Locale, string> = { en: "EN", "pt-br": "PT" };
 			lang={l}
 			data-locale-link={l}
 			aria-current={l === locale ? "page" : undefined}
-			class="pressable grid h-7 min-w-9 place-items-center rounded-md px-2 font-mono text-xs text-muted hover:text-foreground aria-[current=page]:bg-subtle aria-[current=page]:text-foreground"
+			class="pressable grid h-8 min-w-10 place-items-center rounded-full px-2.5 font-mono text-xs text-muted hover:text-foreground aria-[current=page]:bg-background aria-[current=page]:text-accent aria-[current=page]:shadow-sm"
 		>
 			{short[l]}
 		</a>
