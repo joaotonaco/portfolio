@@ -20,13 +20,9 @@ import elysiaSvg from "@/assets/icons/elysia.svg?raw";
 
 export interface Tool {
 	name: string;
-	/** SVG path on a 24×24 viewBox. */
 	path?: string;
-	/** Clips the square badge to rounded corners, like the official rounded logo. */
 	rounded?: boolean;
-	/** Full multi-tone SVG markup, for logos that aren't a single path. */
 	svg?: string;
-	/** Brand color, revealed on hover. Monochrome brands use the text color. */
 	color: string;
 	kind: Localized;
 }

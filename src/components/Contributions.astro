@@ -34,7 +34,7 @@ const total = data ? t("contributions.total", { n: data.total.toLocaleString(loc
 					{t("contributions.less")}
 					{[0, 1, 2, 3, 4].map((level) => (
 						<span
-							class="size-2.5 rounded-[2px]"
+							class="size-2.5 rounded-xs"
 							style={{ backgroundColor: `var(--graph-${level})` }}
 						/>
 					))}

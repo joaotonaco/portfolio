@@ -3,13 +3,11 @@ interface Props {
 	label: string;
 	index: number;
 	id?: string;
-	/** Top offset on desktop so the label lines up with the first row of content. */
 	labelOffset?: string;
 }
 
 const { label, index, id, labelOffset = "lg:pt-1" } = Astro.props;
 const sectionId = id ?? label.toLowerCase();
-// Sections start at stagger step 5, so step - 4 gives 01, 02, ...
 const number = String(index - 4).padStart(2, "0");
 ---
 

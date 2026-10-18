@@ -81,10 +81,10 @@ export default function ContributionGraph({ weeks, locale, label, tooltip }: Pro
 			<span className="sr-only">{label}</span>
 			{/* rtl makes the scroller start at the newest weeks on narrow screens, no JS needed */}
 			<div
-				className="-mx-1 overflow-x-auto px-1 pb-3 [scrollbar-width:thin] [mask-image:linear-gradient(to_right,transparent,black_24px)] sm:pb-1 sm:[mask-image:none]"
+				className="-mx-1 overflow-x-auto px-1 pb-3 scrollbar-thin mask-[linear-gradient(to_right,transparent,black_24px)] sm:pb-1 sm:mask-none"
 				dir="rtl"
 			>
-				<div dir="ltr" className="min-w-[560px]">
+				<div dir="ltr" className="min-w-140">
 					<div className="mb-1.5 grid font-mono text-[10px] text-muted" style={columns}>
 						{months.map((m) => (
 							<span
@@ -98,7 +98,7 @@ export default function ContributionGraph({ weeks, locale, label, tooltip }: Pro
 					</div>
 					<div
 						aria-hidden="true"
-						className="grid grid-flow-col grid-rows-7 gap-[3px]"
+						className="grid grid-flow-col grid-rows-7 gap-0.75"
 						style={columns}
 						onPointerOver={onPointerOver}
 						onPointerLeave={() => setVisible(false)}
@@ -113,7 +113,7 @@ export default function ContributionGraph({ weeks, locale, label, tooltip }: Pro
 										key={key}
 										data-date={day.date}
 										data-count={day.count}
-										className={`aspect-square rounded-[2px] ${levelClass[day.level]}`}
+										className={`aspect-square rounded-xs ${levelClass[day.level]}`}
 									/>
 								);
 							}),
@@ -124,7 +124,7 @@ export default function ContributionGraph({ weeks, locale, label, tooltip }: Pro
 			<div
 				role="tooltip"
 				aria-hidden="true"
-				className="motion-transform pointer-events-none absolute z-10 origin-bottom -translate-x-1/2 -translate-y-full rounded-md bg-foreground px-2 py-1 font-mono text-[11px] whitespace-nowrap text-background shadow-sm transition-[opacity,scale] duration-[125ms] ease-out data-[visible=false]:scale-[0.97] data-[visible=false]:opacity-0"
+				className="motion-transform pointer-events-none absolute z-10 origin-bottom -translate-x-1/2 -translate-y-full rounded-md bg-foreground px-2 py-1 font-mono text-[11px] whitespace-nowrap text-background shadow-sm transition-[opacity,scale] duration-125 ease-out data-[visible=false]:scale-[0.97] data-[visible=false]:opacity-0"
 				data-visible={visible && tip !== null}
 				style={{ left: tip?.x ?? 0, top: (tip?.y ?? 0) - 6 }}
 			>

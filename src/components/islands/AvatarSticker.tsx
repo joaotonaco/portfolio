@@ -25,7 +25,6 @@ const SPRING = springEasing();
 const REACH = 140;
 const LIFT = "scale(1.08)";
 
-/** Pulls harder the further it goes, so the sticker never flies off. */
 const rubberBand = (distance: number) =>
 	Math.sign(distance) * REACH * (1 - Math.exp(-Math.abs(distance) / REACH));
 
@@ -35,9 +34,7 @@ export default function AvatarSticker({ src, alt, className = "" }: Props) {
 
 	function onPointerDown(event: PointerEvent<HTMLDivElement>) {
 		const node = sticker.current;
-		// Ignore extra fingers once a drag is under way.
 		if (!node || drag.current || event.button !== 0) return;
-		// Keeps the drag alive when the pointer outruns the sticker.
 		try {
 			node.setPointerCapture(event.pointerId);
 		} catch {}
@@ -69,7 +66,6 @@ export default function AvatarSticker({ src, alt, className = "" }: Props) {
 			? "transform 200ms var(--ease-out), box-shadow 200ms ease"
 			: `transform 750ms ${SPRING}, box-shadow 300ms ease`;
 		node.style.transform = "";
-		// Hand control back to the stylesheet (hover tilt) once it settles.
 		node.addEventListener(
 			"transitionend",
 			() => {

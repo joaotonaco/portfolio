@@ -6,7 +6,6 @@ export interface ContributionDay {
 
 export interface Contributions {
 	total: number;
-	/** Columns of 7 days (Sunday first). Leading days of the first week may be `null`. */
 	weeks: (ContributionDay | null)[][];
 }
 
@@ -44,7 +43,6 @@ async function load(): Promise<Contributions | null> {
 	}
 }
 
-/** Fetched once per build and shared between locales. Never throws. */
 export function getContributions() {
 	cached ??= load();
 	return cached;

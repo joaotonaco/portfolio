@@ -8,7 +8,6 @@ interface Props {
 	labels: { same: string; ahead: string; behind: string };
 }
 
-/** Minutes east of UTC for `timeZone` at `date`. */
 function zoneOffset(timeZone: string, date: Date) {
 	const parts = new Intl.DateTimeFormat("en-US", {
 		timeZone,
@@ -30,7 +29,7 @@ function relativeLabel(diffMinutes: number, labels: Props["labels"]) {
 	const h = `${Number.isInteger(hours) ? hours : hours.toFixed(1)}h`;
 	return (diffMinutes > 0 ? labels.ahead : labels.behind).replace("{h}", h);
 }
-/** Re-renders on every minute boundary. */
+
 function subscribe(onChange: () => void) {
 	let interval: ReturnType<typeof setInterval> | undefined;
 	const timeout = setTimeout(
