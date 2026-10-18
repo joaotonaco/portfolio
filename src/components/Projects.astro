@@ -1,0 +1,52 @@
+---
+import type { Locale } from "@/i18n/ui";
+
+import { githubUrl, projects } from "@/data/projects";
+import { useTranslations } from "@/i18n/utils";
+
+import Icon from "./Icon.astro";
+import Section from "./Section.astro";
+
+interface Props {
+	locale: Locale;
+	index: number;
+}
+
+const { locale, index } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<Section label={t("projects.label")} id="projects" index={index} labelOffset="lg:pt-2.5">
+	<ul class="-mx-2 space-y-1">
+		{projects.map((project) => (
+			<li>
+				<a
+					href={project.href}
+					target="_blank"
+					rel="noopener"
+					class="row group flex items-start gap-3 rounded-lg p-2"
+				>
+					<div class="min-w-0 flex-1">
+						<div class="flex items-center gap-2">
+							<p class="text-sm font-medium">{project.name}</p>
+							<span class="rounded-md border border-border px-1.5 py-px font-mono text-[10px] text-muted">
+								{t(`projects.${project.role}`)}
+							</span>
+						</div>
+						<p class="mt-0.5 text-sm text-pretty text-muted">{project.description[locale]}</p>
+					</div>
+					<Icon name="arrow" size={14} class="row-arrow mt-1 shrink-0 text-muted" />
+				</a>
+			</li>
+		))}
+	</ul>
+	<a
+		href={githubUrl}
+		target="_blank"
+		rel="noopener"
+		class="row group mt-3 -ml-2 inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm text-muted hover:text-foreground"
+	>
+		{t("projects.more")}
+		<Icon name="arrow" size={14} class="row-arrow" />
+	</a>
+</Section>

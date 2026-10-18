@@ -1,0 +1,127 @@
+---
+import type { Locale } from "@/i18n/ui";
+
+import { profile } from "@/data/profile";
+import { useTranslations } from "@/i18n/utils";
+
+import Icon from "./Icon.astro";
+import CopyEmail from "./islands/CopyEmail";
+import LocalTime from "./islands/LocalTime";
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const [titleBefore, titleAfter] = t("hero.title").split("{highlight}");
+const [currentBefore, currentAfter] = t("hero.currentlyValue").split("{company}");
+---
+
+<section aria-labelledby="hero-title" class="pt-16 pb-12 sm:pt-24 sm:pb-16">
+	<h1
+		id="hero-title"
+		class="max-w-[18ch] text-[clamp(2.25rem,6.4vw,4.25rem)] leading-[1.02] font-semibold tracking-[-0.04em] text-balance"
+		data-enter
+		style={{ "--i": 1 }}
+	>
+		{titleBefore}
+		<span class="relative whitespace-nowrap text-accent">
+			{t("hero.highlight")}
+			<svg
+				aria-hidden="true"
+				viewBox="0 0 300 20"
+				preserveAspectRatio="none"
+				class="scribble absolute bottom-[-0.14em] left-0 h-[0.28em] w-full overflow-visible"
+			>
+				<path
+					d="M3 14C60 6 120 4 178 7c40 2 80 5 119 1"
+					pathLength="1"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="5"
+					stroke-linecap="round"
+				></path>
+			</svg>
+		</span>
+		{titleAfter}
+	</h1>
+
+	<p
+		class="mt-6 max-w-[58ch] text-lg leading-relaxed text-pretty text-muted sm:mt-8"
+		data-enter
+		style={{ "--i": 2 }}
+	>
+		{t("hero.intro")}
+	</p>
+
+	<div class="mt-8 flex flex-wrap items-center gap-2" data-enter style={{ "--i": 3 }}>
+		<a
+			href={`mailto:${profile.email}`}
+			class="pressable inline-flex h-10 items-center gap-2 rounded-full bg-accent px-4 text-sm font-medium text-white hover:bg-accent/90 dark:text-background"
+		>
+			<Icon name="mail" size={15} />
+			{t("about.email")}
+		</a>
+		<CopyEmail
+			client:visible
+			email={profile.email}
+			labels={{ copy: t("about.copy"), copied: t("about.copied") }}
+		/>
+		<span aria-hidden="true" class="mx-1 hidden h-5 w-px bg-border min-[400px]:block"></span>
+		<ul class="-ml-2 flex basis-full items-center gap-1 min-[400px]:ml-0 min-[400px]:basis-auto">
+			{profile.socials.map((social) => (
+				<li>
+					<a
+						href={social.href}
+						target="_blank"
+						rel="me noopener"
+						aria-label={social.label}
+						title={social.label}
+						class="pressable grid size-10 place-items-center rounded-full text-muted hover:bg-subtle hover:text-foreground"
+					>
+						<Icon name={social.icon} size={16} />
+					</a>
+				</li>
+			))}
+		</ul>
+	</div>
+
+	<dl class="mt-12 grid gap-2 sm:mt-16 sm:grid-cols-3" data-enter style={{ "--i": 4 }}>
+		<div class="flex items-center justify-between gap-4 rounded-2xl bg-subtle px-4 py-3.5 sm:block sm:px-5 sm:py-4">
+			<dt class="font-mono text-xs tracking-wider text-muted uppercase">{t("hero.basedIn")}</dt>
+			<dd class="flex flex-col items-end gap-1 sm:mt-2 sm:items-start">
+				<span class="block text-sm font-medium">{t("hero.place")}</span>
+				<LocalTime
+					client:idle
+					timeZone={profile.timeZone}
+					locale={locale}
+					labels={{
+						same: t("header.timeSame"),
+						ahead: t("header.timeAhead"),
+						behind: t("header.timeBehind"),
+					}}
+				/>
+			</dd>
+		</div>
+		<div class="flex items-center justify-between gap-4 rounded-2xl bg-subtle px-4 py-3.5 sm:block sm:px-5 sm:py-4">
+			<dt class="font-mono text-xs tracking-wider text-muted uppercase">{t("hero.currently")}</dt>
+			<dd class="text-sm font-medium sm:mt-2">
+				{currentBefore}
+				<a
+					href={profile.company.url}
+					target="_blank"
+					rel="noopener"
+					class="text-accent underline decoration-accent/30 underline-offset-4 transition-colors duration-150 hover:decoration-accent"
+				>
+					{profile.company.name}
+				</a>
+				{currentAfter}
+			</dd>
+		</div>
+		<div class="flex items-center justify-between gap-4 rounded-2xl bg-subtle px-4 py-3.5 sm:block sm:px-5 sm:py-4">
+			<dt class="font-mono text-xs tracking-wider text-muted uppercase">{t("hero.focus")}</dt>
+			<dd class="text-sm font-medium sm:mt-2">{t("hero.focusValue")}</dd>
+		</div>
+	</dl>
+</section>

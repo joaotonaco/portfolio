@@ -1,0 +1,54 @@
+---
+import type { Locale } from "@/i18n/ui";
+
+import { stack } from "@/data/stack";
+import { useTranslations } from "@/i18n/utils";
+
+import Section from "./Section.astro";
+
+interface Props {
+	locale: Locale;
+	index: number;
+}
+
+const { locale, index } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<Section label={t("stack.label")} id="stack" index={index}>
+	<p class="mb-5 text-sm text-muted">{t("stack.caption")}</p>
+	<ul class="flex flex-wrap gap-2">
+		{stack.map((tool) => (
+			<li
+				class="tool flex items-center gap-2.5 rounded-xl bg-subtle py-2 pr-4 pl-3"
+				style={{ "--brand": tool.color }}
+			>
+				{tool.svg ? (
+					<Fragment
+						set:html={tool.svg.replace(
+							"<svg ",
+							'<svg aria-hidden="true" class="tool-logo size-4.5 shrink-0" ',
+						)}
+					/>
+				) : (
+					<svg
+						aria-hidden="true"
+						viewBox="0 0 24 24"
+						class:list={[
+							"tool-icon size-4.5 shrink-0 fill-current text-muted",
+							tool.rounded && "[clip-path:inset(0_round_4px)]",
+						]}
+					>
+						<path d={tool.path} />
+					</svg>
+				)}
+				<div class="min-w-0">
+					<p class="text-sm font-medium whitespace-nowrap">{tool.name}</p>
+					<p class="font-mono text-[10px] tracking-wider whitespace-nowrap text-muted uppercase">
+						{tool.kind[locale]}
+					</p>
+				</div>
+			</li>
+		))}
+	</ul>
+</Section>

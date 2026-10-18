@@ -1,0 +1,37 @@
+---
+interface Props {
+	label: string;
+	index: number;
+	id?: string;
+	labelOffset?: string;
+}
+
+const { label, index, id, labelOffset = "lg:pt-1" } = Astro.props;
+const sectionId = id ?? label.toLowerCase();
+const number = String(index - 4).padStart(2, "0");
+---
+
+<section
+	id={sectionId}
+	aria-labelledby={`${sectionId}-heading`}
+	class="grid gap-4 border-t border-border py-10 sm:py-12 lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-10"
+	data-enter
+	style={{ "--i": index }}
+>
+	<h2
+		id={`${sectionId}-heading`}
+		class:list={[
+			"flex h-fit items-center gap-2 font-mono text-xs tracking-wider text-muted uppercase lg:sticky lg:top-10",
+			labelOffset,
+		]}
+	>
+		<span aria-hidden="true" class="text-accent tabular-nums">
+			{number}
+		</span>
+		<span aria-hidden="true" class="h-px w-3 bg-border"></span>
+		{label}
+	</h2>
+	<div class="min-w-0">
+		<slot />
+	</div>
+</section>

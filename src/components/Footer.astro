@@ -1,0 +1,23 @@
+---
+import type { Locale } from "@/i18n/ui";
+
+import { useTranslations } from "@/i18n/utils";
+
+interface Props {
+	locale: Locale;
+	index: number;
+}
+
+const { locale, index } = Astro.props;
+const t = useTranslations(locale);
+const year = new Date().getFullYear();
+---
+
+<footer
+	class="flex items-center justify-between border-t border-border py-8 font-mono text-xs text-muted"
+	data-enter
+	style={{ "--i": index }}
+>
+	<span>{t("footer.made")}</span>
+	<span class="tabular-nums">© {year}</span>
+</footer>

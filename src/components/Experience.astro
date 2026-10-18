@@ -1,0 +1,65 @@
+---
+import type { Locale } from "@/i18n/ui";
+
+import { Image } from "astro:assets";
+
+import { experience } from "@/data/experience";
+import { formatMonth, useTranslations } from "@/i18n/utils";
+
+import Section from "./Section.astro";
+
+interface Props {
+	locale: Locale;
+	index: number;
+}
+
+const { locale, index } = Astro.props;
+const t = useTranslations(locale);
+const jobs = experience.toSorted((a, b) => b.start.localeCompare(a.start));
+---
+
+<Section label={t("experience.label")} id="experience" index={index} labelOffset="lg:pt-4">
+	<ul class="relative -mx-2 space-y-2 before:absolute before:top-9 before:bottom-9 before:left-8.5 before:w-px before:bg-linear-to-b before:from-accent/60 before:via-border before:to-border before:content-['']">
+		{jobs.map((job) => (
+			<li class="relative">
+				<a
+					href={job.url}
+					target="_blank"
+					rel="noopener"
+					class="row flex items-center gap-4 rounded-xl p-3"
+				>
+					<span class="relative shrink-0">
+						<Image
+							src={job.logo}
+							alt=""
+							width={44}
+							height={44}
+							densities={[1, 2]}
+							class="size-11 rounded-xl bg-background ring-1 ring-border"
+						/>
+						{job.end === null && (
+							<span class="absolute -right-0.5 -bottom-0.5 size-3 rounded-full bg-accent ring-2 ring-background" />
+						)}
+					</span>
+					<div class="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+						<div class="min-w-0">
+							<p class="truncate font-medium">{job.company}</p>
+							<p class="truncate text-sm text-muted">{job.role[locale]}</p>
+						</div>
+						<div class="shrink-0 text-sm text-muted tabular-nums sm:text-right">
+							<p class="sm:text-foreground">
+								{formatMonth(locale, job.start)} –{" "}
+								{job.end ? (
+									formatMonth(locale, job.end)
+								) : (
+									<span class="text-accent">{t("experience.present")}</span>
+								)}
+							</p>
+							<p class="hidden text-xs sm:block">{job.location[locale]}</p>
+						</div>
+					</div>
+				</a>
+			</li>
+		))}
+	</ul>
+</Section>

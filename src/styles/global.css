@@ -1,0 +1,307 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+	--background: oklch(0.99 0.003 295);
+	--foreground: oklch(0.2 0.015 290);
+	--muted: oklch(0.52 0.015 290);
+	--subtle: oklch(0.965 0.008 295);
+	--border: oklch(0.91 0.01 295);
+	--accent: oklch(0.55 0.22 293);
+	--graph-0: oklch(0.94 0.008 295);
+	--graph-1: oklch(0.86 0.07 295);
+	--graph-2: oklch(0.74 0.14 294);
+	--graph-3: oklch(0.6 0.2 293);
+	--graph-4: oklch(0.46 0.21 290);
+
+	color-scheme: light;
+}
+
+.dark {
+	--background: oklch(0.15 0.012 290);
+	--foreground: oklch(0.96 0.006 295);
+	--muted: oklch(0.67 0.016 290);
+	--subtle: oklch(0.2 0.016 290);
+	--border: oklch(0.27 0.018 290);
+	--accent: oklch(0.72 0.17 295);
+	--graph-0: oklch(0.22 0.014 290);
+	--graph-1: oklch(0.34 0.08 292);
+	--graph-2: oklch(0.47 0.14 293);
+	--graph-3: oklch(0.62 0.18 294);
+	--graph-4: oklch(0.8 0.13 298);
+
+	color-scheme: dark;
+}
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-muted: var(--muted);
+	--color-subtle: var(--subtle);
+	--color-border: var(--border);
+	--color-accent: var(--accent);
+	--font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+	--font-mono: "Geist Mono", ui-monospace, monospace;
+}
+
+@theme {
+	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+	--ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+	--text-xs--letter-spacing: 0.01em;
+	--text-sm--letter-spacing: 0.005em;
+	--text-lg--letter-spacing: -0.005em;
+	--text-xl--letter-spacing: -0.01em;
+	--text-2xl--letter-spacing: -0.015em;
+	--text-3xl--letter-spacing: -0.02em;
+	--text-4xl--letter-spacing: -0.025em;
+	--text-5xl--letter-spacing: -0.03em;
+	--text-6xl--letter-spacing: -0.035em;
+	--text-7xl--letter-spacing: -0.04em;
+	--text-8xl--letter-spacing: -0.04em;
+	--text-9xl--letter-spacing: -0.04em;
+}
+
+@layer base {
+	html {
+		background-color: var(--background);
+		color: var(--foreground);
+		-webkit-tap-highlight-color: transparent;
+		font-kerning: normal;
+		font-variant-ligatures: common-ligatures contextual;
+		text-rendering: optimizeLegibility;
+	}
+
+	body {
+		@apply bg-background font-sans text-foreground antialiased;
+	}
+
+	::selection {
+		background-color: color-mix(in oklch, var(--accent) 35%, transparent);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+		border-radius: 6px;
+	}
+}
+
+.tool {
+	transition: background-color 200ms ease;
+}
+
+.tool-logo {
+	opacity: 0.75;
+	transition:
+		opacity 200ms ease,
+		transform 200ms var(--ease-out);
+}
+
+.dark .tool-logo {
+	filter: invert(1);
+}
+
+.tool-icon {
+	transition:
+		color 200ms ease,
+		transform 200ms var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.tool:hover {
+		background-color: color-mix(in oklch, var(--brand) 10%, var(--subtle));
+	}
+
+	.tool:hover .tool-icon {
+		color: var(--brand);
+		transform: scale(1.08);
+	}
+
+	.tool:hover .tool-logo {
+		opacity: 1;
+		transform: scale(1.08);
+	}
+}
+
+@keyframes scribble {
+	from {
+		stroke-dashoffset: 1.05;
+	}
+}
+
+.scribble path {
+	stroke-dasharray: 1 2;
+	animation: scribble 900ms var(--ease-in-out) 700ms both;
+}
+
+[data-navigated] .scribble path {
+	animation: none;
+}
+
+.sticker {
+	position: relative;
+	z-index: 1;
+	padding: 3px;
+	border-radius: 12px;
+	background: oklch(1 0 0);
+	box-shadow:
+		0 1px 2px oklch(0 0 0 / 0.08),
+		0 6px 16px -6px oklch(0 0 0 / 0.18);
+	cursor: grab;
+	touch-action: none;
+	user-select: none;
+	transition:
+		transform 200ms var(--ease-out),
+		box-shadow 200ms ease;
+}
+
+.dark .sticker {
+	background: oklch(0.93 0.004 250);
+	box-shadow:
+		0 1px 2px oklch(0 0 0 / 0.4),
+		0 8px 20px -6px oklch(0 0 0 / 0.6);
+}
+
+.sticker[data-dragging] {
+	z-index: 20;
+	cursor: grabbing;
+	box-shadow:
+		0 2px 4px oklch(0 0 0 / 0.08),
+		0 18px 36px -10px oklch(0 0 0 / 0.3);
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.sticker:not([data-dragging]):hover {
+		transform: rotate(-4deg) scale(1.04);
+	}
+}
+
+.no-transitions *:not([data-theme-toggle], [data-theme-toggle] *) {
+	transition: none !important;
+}
+
+.pressable {
+	transition-property: transform, background-color, color, border-color;
+	transition-duration: 160ms, 150ms, 150ms, 150ms;
+	transition-timing-function: var(--ease-out), ease, ease, ease;
+}
+
+.pressable:active {
+	transform: scale(0.97);
+}
+
+.row {
+	transition: background-color 150ms ease;
+}
+
+.row-arrow {
+	transition:
+		transform 150ms var(--ease-out),
+		color 150ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.row:hover {
+		background-color: var(--subtle);
+	}
+
+	.row:hover .row-arrow {
+		color: var(--foreground);
+		transform: translate(2px, -2px);
+	}
+}
+
+@keyframes enter {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+		filter: blur(4px);
+	}
+}
+
+[data-enter] {
+	animation: enter 500ms var(--ease-out) both;
+	animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+[data-navigated] [data-enter] {
+	animation: none;
+}
+
+@keyframes vt-fade-out {
+	to {
+		opacity: 0;
+		filter: blur(2px);
+	}
+}
+
+@keyframes vt-fade-in {
+	from {
+		opacity: 0;
+		filter: blur(2px);
+	}
+}
+
+::view-transition-old(root) {
+	animation: vt-fade-out 100ms ease both;
+}
+
+::view-transition-new(root) {
+	animation: vt-fade-in 140ms ease both;
+}
+
+/* Theme switch: the new theme is revealed by a circle (driven from ThemeToggle via WAAPI),
+   so the default crossfade is switched off and the old snapshot stays put underneath. */
+[data-theme-switching]::view-transition-old(root),
+[data-theme-switching]::view-transition-new(root) {
+	animation: none;
+	mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	@keyframes enter-reduced {
+		from {
+			opacity: 0;
+		}
+	}
+
+	[data-enter] {
+		animation: enter-reduced 200ms ease both;
+	}
+
+	.pressable:active {
+		transform: none;
+	}
+
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: 120ms;
+		filter: none;
+	}
+
+	.sticker:not([data-dragging]):hover {
+		transform: none;
+	}
+
+	.scribble path {
+		animation: none;
+	}
+
+	.tool:hover .tool-icon,
+	.tool:hover .tool-logo {
+		transform: none;
+	}
+
+	.motion-transform {
+		scale: none !important;
+		rotate: none !important;
+		filter: none !important;
+	}
+
+	.row:hover .row-arrow {
+		transform: none;
+	}
+}

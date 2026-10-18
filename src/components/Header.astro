@@ -1,0 +1,45 @@
+---
+import type { Locale } from "@/i18n/ui";
+
+import { getImage } from "astro:assets";
+
+import { profile } from "@/data/profile";
+import { useTranslations } from "@/i18n/utils";
+
+import AvatarSticker from "./islands/AvatarSticker";
+import LanguageSwitch from "./LanguageSwitch.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const avatar = await getImage({ src: profile.avatar, width: 128, height: 128, format: "webp" });
+---
+
+<header
+	class="flex items-center justify-between gap-4 pt-6 sm:pt-10"
+	data-enter
+	style={{ "--i": 0 }}
+>
+	<div class="flex min-w-0 items-center gap-3">
+		<AvatarSticker
+			client:load
+			src={avatar.src}
+			alt={profile.name}
+			className="size-11 shrink-0 sm:size-12"
+		/>
+		<div class="min-w-0">
+			<p class="truncate font-medium">{profile.name}</p>
+			<p class="hidden truncate font-mono text-xs text-muted min-[400px]:block">
+				{t("header.role")}
+			</p>
+		</div>
+	</div>
+	<div class="flex shrink-0 items-center gap-1">
+		<LanguageSwitch locale={locale} label={t("header.language")} />
+		<ThemeToggle label={t("header.theme")} />
+	</div>
+</header>
