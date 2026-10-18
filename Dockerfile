@@ -16,7 +16,6 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
 
 FROM deps AS build
 COPY . .
-# Contributions are fetched here; redeploy to refresh the graph.
 RUN pnpm build
 
 FROM node:24-alpine AS runtime
