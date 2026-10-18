@@ -10,7 +10,10 @@ export interface Contributions {
 }
 
 const USERNAME = "joaotonaco";
-let cached: Promise<Contributions | null> | undefined;
+const TTL = 24 * 60 * 60 * 1000;
+
+let cache: { data: Contributions; fetchedAt: number } | undefined;
+let pending: Promise<Contributions | null> | undefined;
 
 async function load(): Promise<Contributions | null> {
 	try {
@@ -43,7 +46,20 @@ async function load(): Promise<Contributions | null> {
 	}
 }
 
-export function getContributions() {
-	cached ??= load();
-	return cached;
+function refresh() {
+	pending ??= load()
+		.then((data) => {
+			if (data) cache = { data, fetchedAt: Date.now() };
+			return data ?? cache?.data ?? null;
+		})
+		.finally(() => {
+			pending = undefined;
+		});
+	return pending;
+}
+
+export async function getContributions() {
+	if (!cache) return refresh();
+	if (Date.now() - cache.fetchedAt > TTL) void refresh();
+	return cache.data;
 }

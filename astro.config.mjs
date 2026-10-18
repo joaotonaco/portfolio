@@ -19,6 +19,7 @@ export default defineConfig({
 		react(),
 		sitemap({
 			i18n: { defaultLocale: "en", locales: { en: "en", "pt-br": "pt-BR" } },
+			customPages: ["https://joaotonaco.dev/en/", "https://joaotonaco.dev/pt-br/"],
 			filter: (page) => new URL(page).pathname !== "/",
 		}),
 	],

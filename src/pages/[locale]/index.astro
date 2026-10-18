@@ -6,16 +6,16 @@ import Header from "@/components/Header.astro";
 import Hero from "@/components/Hero.astro";
 import Projects from "@/components/Projects.astro";
 import Stack from "@/components/Stack.astro";
-import { locales } from "@/i18n/ui";
-import { getLocale, useTranslations } from "@/i18n/utils";
+import { isLocale, useTranslations } from "@/i18n/utils";
 import Base from "@/layouts/Base.astro";
 
-export function getStaticPaths() {
-	return locales.map((locale) => ({ params: { locale } }));
-}
+export const prerender = false;
 
-const locale = getLocale(Astro.params.locale);
+const { locale } = Astro.params;
+if (!isLocale(locale)) return new Response(null, { status: 404 });
+
 const t = useTranslations(locale);
+Astro.response.headers.set("Cache-Control", "public, max-age=600");
 ---
 
 <Base locale={locale} title={t("meta.title")} description={t("meta.description")} path="/">
