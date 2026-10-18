@@ -26,13 +26,9 @@ const { label } = Astro.props;
 </button>
 
 <script>
-	document.addEventListener("click", (event) => {
-		const button = (event.target as Element).closest("[data-theme-toggle]");
-		if (!button) return;
-
+	function applyTheme(dark: boolean) {
 		const root = document.documentElement;
-		const dark = !root.classList.contains("dark");
-
+		// Freeze color transitions so every surface swaps in the same frame.
 		root.classList.add("no-transitions");
 		root.classList.toggle("dark", dark);
 		try {
@@ -41,5 +37,50 @@ const { label } = Astro.props;
 		requestAnimationFrame(() =>
 			requestAnimationFrame(() => root.classList.remove("no-transitions")),
 		);
+	}
+
+	// Delegated once, so it keeps working after ClientRouter swaps the header.
+	document.addEventListener("click", (event) => {
+		const button = (event.target as Element).closest<HTMLElement>("[data-theme-toggle]");
+		if (!button) return;
+
+		const root = document.documentElement;
+		const dark = !root.classList.contains("dark");
+		const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		if (!document.startViewTransition) {
+			applyTheme(dark);
+			return;
+		}
+
+		if (reduce) {
+			// Gentle crossfade only (the default root view transition).
+			document.startViewTransition(() => applyTheme(dark));
+			return;
+		}
+
+		// Reveal the new theme as a circle growing out of the toggle.
+		const rect = button.getBoundingClientRect();
+		const x = rect.left + rect.width / 2;
+		const y = rect.top + rect.height / 2;
+		const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+
+		root.dataset.themeSwitching = "";
+		const transition = document.startViewTransition(() => applyTheme(dark));
+		transition.ready
+			.then(() =>
+				root.animate(
+					{
+						clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`],
+					},
+					{
+						duration: 450,
+						easing: "cubic-bezier(0.23, 1, 0.32, 1)",
+						pseudoElement: "::view-transition-new(root)",
+					},
+				),
+			)
+			.catch(() => {});
+		transition.finished.finally(() => delete root.dataset.themeSwitching);
 	});
 </script>

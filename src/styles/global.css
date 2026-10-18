@@ -246,11 +246,19 @@
 }
 
 ::view-transition-old(root) {
-	animation: vt-fade-out 160ms ease both;
+	animation: vt-fade-out 100ms ease both;
 }
 
 ::view-transition-new(root) {
-	animation: vt-fade-in 200ms ease both;
+	animation: vt-fade-in 140ms ease both;
+}
+
+/* Theme switch: the new theme is revealed by a circle (driven from ThemeToggle via WAAPI),
+   so the default crossfade is switched off and the old snapshot stays put underneath. */
+[data-theme-switching]::view-transition-old(root),
+[data-theme-switching]::view-transition-new(root) {
+	animation: none;
+	mix-blend-mode: normal;
 }
 
 @media (prefers-reduced-motion: reduce) {
