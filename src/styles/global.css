@@ -1,11 +1,9 @@
 @import "tailwindcss";
-@import "@fontsource-variable/geist";
-@import "@fontsource-variable/geist-mono";
+@import "./fonts.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-	/* Neutrals with a violet tint; violet is the one signature color. */
 	--background: oklch(0.99 0.003 295);
 	--foreground: oklch(0.2 0.015 290);
 	--muted: oklch(0.52 0.015 290);
@@ -44,14 +42,26 @@
 	--color-subtle: var(--subtle);
 	--color-border: var(--border);
 	--color-accent: var(--accent);
-	--font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
-	--font-mono: "Geist Mono Variable", ui-monospace, monospace;
+	--font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+	--font-mono: "Geist Mono", ui-monospace, monospace;
 }
 
-/* Stronger curves than Tailwind's defaults; also exposed as --ease-* on :root. */
 @theme {
 	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 	--ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+	--text-xs--letter-spacing: 0.01em;
+	--text-sm--letter-spacing: 0.005em;
+	--text-lg--letter-spacing: -0.005em;
+	--text-xl--letter-spacing: -0.01em;
+	--text-2xl--letter-spacing: -0.015em;
+	--text-3xl--letter-spacing: -0.02em;
+	--text-4xl--letter-spacing: -0.025em;
+	--text-5xl--letter-spacing: -0.03em;
+	--text-6xl--letter-spacing: -0.035em;
+	--text-7xl--letter-spacing: -0.04em;
+	--text-8xl--letter-spacing: -0.04em;
+	--text-9xl--letter-spacing: -0.04em;
 }
 
 @layer base {
@@ -59,11 +69,13 @@
 		background-color: var(--background);
 		color: var(--foreground);
 		-webkit-tap-highlight-color: transparent;
+		font-kerning: normal;
+		font-variant-ligatures: common-ligatures contextual;
+		text-rendering: optimizeLegibility;
 	}
 
 	body {
 		@apply bg-background font-sans text-foreground antialiased;
-		text-rendering: optimizeLegibility;
 	}
 
 	::selection {
@@ -77,12 +89,10 @@
 	}
 }
 
-/* Stack tiles stay monochrome until hovered, then take their brand color. */
 .tool {
 	transition: background-color 200ms ease;
 }
 
-/* Multi-tone logos keep their own shades; flipped in dark mode so the dark body stays visible. */
 .tool-logo {
 	opacity: 0.75;
 	transition:
@@ -116,7 +126,6 @@
 	}
 }
 
-/* Hand-drawn underline under the hero highlight, drawn once on load. */
 @keyframes scribble {
 	from {
 		stroke-dashoffset: 1;
@@ -132,7 +141,6 @@
 	animation: none;
 }
 
-/* Avatar as a peelable sticker: white border, soft shadow, drag to fling. */
 .sticker {
 	position: relative;
 	z-index: 1;
@@ -171,13 +179,10 @@
 	}
 }
 
-/* Disables every transition for one frame while the theme class swaps,
-   so colors change at once instead of fading piecemeal. The toggle keeps its icon morph. */
 .no-transitions *:not([data-theme-toggle], [data-theme-toggle] *) {
 	transition: none !important;
 }
 
-/* Press feedback for anything pressable. */
 .pressable {
 	transition-property: transform, background-color, color, border-color;
 	transition-duration: 160ms, 150ms, 150ms, 150ms;
@@ -188,7 +193,6 @@
 	transform: scale(0.97);
 }
 
-/* List rows: tint + nudge the arrow toward where the link goes. */
 .row {
 	transition: background-color 150ms ease;
 }
@@ -210,7 +214,6 @@
 	}
 }
 
-/* One-shot entrance on first paint. --i sets the stagger step. */
 @keyframes enter {
 	from {
 		opacity: 0;
@@ -224,12 +227,10 @@
 	animation-delay: calc(var(--i, 0) * 60ms);
 }
 
-/* Client-side navigations (locale switch) skip the entrance. */
 [data-navigated] [data-enter] {
 	animation: none;
 }
 
-/* Locale switch: soft crossfade instead of text teleporting. */
 @keyframes vt-fade-out {
 	to {
 		opacity: 0;

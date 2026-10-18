@@ -1,6 +1,9 @@
 ---
 import { ClientRouter } from "astro:transitions";
 
+import geistMedium from "@/assets/fonts/Geist-Medium.woff2?url";
+import geistRegular from "@/assets/fonts/Geist-Regular.woff2?url";
+import geistMonoRegular from "@/assets/fonts/GeistMono-Regular.woff2?url";
 import "@/styles/global.css";
 import { htmlLang, type Locale, locales } from "@/i18n/ui";
 import { localizedPath } from "@/i18n/utils";
@@ -9,7 +12,6 @@ interface Props {
 	locale: Locale;
 	title: string;
 	description: string;
-	/** Path without the locale prefix, used for alternates. Omit on pages without translations. */
 	path?: string;
 }
 
@@ -26,6 +28,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 		<meta name="description" content={description} />
 		<meta name="author" content="João Gabriel" />
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		{[geistRegular, geistMedium, geistMonoRegular].map((href) => (
+			<link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+		))}
 		<link rel="canonical" href={canonical} />
 		<link rel="sitemap" href="/sitemap-index.xml" />
 		{path !== undefined &&
