@@ -25,12 +25,52 @@ const SPRING = springEasing();
 const REACH = 140;
 const LIFT = "scale(1.08)";
 
+/** Taps this close together count toward the lightning easter egg. */
+const TAP_GAP = 400;
+const TAPS_TO_STRIKE = 10;
+const TAP_SLOP = 6;
+/** Tap counts that crackle with growing static before the full strike. */
+const HINTS: Record<number, 1 | 2 | 3> = { 1: 1, 5: 2, 7: 3 };
+
+let lightning: Promise<typeof import("@/lib/lightning")> | undefined;
+const loadLightning = () => (lightning ??= import("@/lib/lightning"));
+
 const rubberBand = (distance: number) =>
 	Math.sign(distance) * REACH * (1 - Math.exp(-Math.abs(distance) / REACH));
 
 export default function AvatarSticker({ src, alt, className = "" }: Props) {
 	const sticker = useRef<HTMLDivElement>(null);
-	const drag = useRef<{ id: number; x: number; y: number } | null>(null);
+	const drag = useRef<{ id: number; x: number; y: number; moved: boolean } | null>(null);
+	const taps = useRef({ count: 0, last: 0 });
+
+	function onTap() {
+		const now = performance.now();
+		const tally = taps.current;
+		tally.count = now - tally.last < TAP_GAP ? tally.count + 1 : 1;
+		tally.last = now;
+		const node = sticker.current;
+		if (!node) return;
+		const box = node.getBoundingClientRect();
+		const center = { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+		const hint = HINTS[tally.count];
+		if (hint) loadLightning().then(({ crackle }) => crackle(center, box.width / 2, hint));
+		if (tally.count < TAPS_TO_STRIKE) return;
+		tally.count = 0;
+		loadLightning().then(({ strike }) => strike(center));
+		node
+			.querySelector("img")
+			?.animate(
+				[
+					{ transform: "translate(0, 0)", filter: "brightness(1.8) saturate(1.4)" },
+					{ transform: "translate(-2px, 1px)" },
+					{ transform: "translate(2px, -1px)" },
+					{ transform: "translate(-1px, -1px)" },
+					{ transform: "translate(1px, 1px)" },
+					{ transform: "translate(0, 0)", filter: "brightness(1) saturate(1)" },
+				],
+				{ duration: 360, easing: "ease-out" },
+			);
+	}
 
 	function onPointerDown(event: PointerEvent<HTMLDivElement>) {
 		const node = sticker.current;
@@ -38,7 +78,8 @@ export default function AvatarSticker({ src, alt, className = "" }: Props) {
 		try {
 			node.setPointerCapture(event.pointerId);
 		} catch {}
-		drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
+		void loadLightning();
+		drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
 		node.dataset.dragging = "";
 		node.style.transition = "transform 160ms var(--ease-out), box-shadow 160ms ease";
 		node.style.transform = LIFT;
@@ -48,6 +89,7 @@ export default function AvatarSticker({ src, alt, className = "" }: Props) {
 		const node = sticker.current;
 		const start = drag.current;
 		if (!node || !start || event.pointerId !== start.id) return;
+		if (Math.hypot(event.clientX - start.x, event.clientY - start.y) > TAP_SLOP) start.moved = true;
 		const x = rubberBand(event.clientX - start.x);
 		const y = rubberBand(event.clientY - start.y);
 		const tilt = Math.max(-14, Math.min(14, x * 0.12));
@@ -61,6 +103,7 @@ export default function AvatarSticker({ src, alt, className = "" }: Props) {
 		if (!node || !start || event.pointerId !== start.id) return;
 		drag.current = null;
 		delete node.dataset.dragging;
+		if (event.type === "pointerup" && !start.moved) onTap();
 		const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 		node.style.transition = reduce
 			? "transform 200ms var(--ease-out), box-shadow 200ms ease"
