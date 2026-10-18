@@ -128,12 +128,12 @@
 
 @keyframes scribble {
 	from {
-		stroke-dashoffset: 1;
+		stroke-dashoffset: 1.05;
 	}
 }
 
 .scribble path {
-	stroke-dasharray: 1;
+	stroke-dasharray: 1 2;
 	animation: scribble 900ms var(--ease-in-out) 700ms both;
 }
 
