@@ -79,11 +79,7 @@ export default function ContributionGraph({ weeks, locale, label, tooltip }: Pro
 	return (
 		<div ref={wrapper} className="relative">
 			<span className="sr-only">{label}</span>
-			{/* rtl makes the scroller start at the newest weeks on narrow screens, no JS needed */}
-			<div
-				className="-mx-1 overflow-x-auto px-1 pb-3 scrollbar-thin mask-[linear-gradient(to_right,transparent,black_24px)] sm:pb-1 sm:mask-none"
-				dir="rtl"
-			>
+			<div className="-mx-1 overflow-x-auto px-1 pb-3 scrollbar-thin sm:pb-1" dir="rtl">
 				<div dir="ltr" className="min-w-140">
 					<div className="mb-1.5 grid font-mono text-[10px] text-muted" style={columns}>
 						{months.map((m) => (
