@@ -1,0 +1,36 @@
+---
+import type { Locale } from "@/i18n/ui";
+
+import { useTranslations } from "@/i18n/utils";
+import { getContributions } from "@/lib/github";
+
+import ContributionLegend from "./ContributionLegend.astro";
+import ContributionGraph from "./islands/ContributionGraph";
+
+// Server island: the page stays static, only this part renders on demand.
+// Data is cached in memory for a day (src/lib/github.ts); browsers may reuse it for 10 minutes.
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const data = await getContributions();
+const total = data ? t("contributions.total", { n: data.total.toLocaleString(locale) }) : "";
+Astro.response.headers.set("Cache-Control", "public, max-age=600");
+---
+
+{data ? (
+	<>
+		<ContributionGraph
+			client:visible
+			weeks={data.weeks}
+			locale={locale}
+			label={total}
+			tooltip={{ one: t("contributions.tooltipOne"), other: t("contributions.tooltipOther") }}
+		/>
+		<ContributionLegend locale={locale} total={total} />
+	</>
+) : (
+	<p class="text-sm text-muted">{t("contributions.empty")}</p>
+)}
