@@ -1,0 +1,65 @@
+---
+import { profile } from "@/data/profile";
+import type { Locale } from "@/i18n/ui";
+import { useTranslations } from "@/i18n/utils";
+import Icon from "./Icon.astro";
+import CopyEmail from "./islands/CopyEmail";
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const [before, after] = t("about.p2").split("{company}");
+---
+
+<section aria-label={t("about.label")} class="pb-8" data-enter style={{ "--i": 1 }}>
+	<div class="space-y-3 leading-relaxed text-pretty text-muted">
+		<p>{t("about.p1")}</p>
+		<p>
+			{before}
+			<a
+				href={profile.company.url}
+				target="_blank"
+				rel="noopener"
+				class="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors duration-150 hover:decoration-foreground"
+			>
+				{profile.company.name}
+			</a>
+			{after}
+		</p>
+	</div>
+
+	<div class="mt-6 flex flex-wrap items-center gap-2">
+		<a
+			href={`mailto:${profile.email}`}
+			class="pressable inline-flex h-9 items-center gap-2 rounded-lg bg-foreground px-3.5 text-sm font-medium text-background hover:opacity-90"
+		>
+			<Icon name="mail" size={15} />
+			{t("about.email")}
+		</a>
+		<CopyEmail
+			client:visible
+			email={profile.email}
+			labels={{ copy: t("about.copy"), copied: t("about.copied") }}
+		/>
+		<span aria-hidden="true" class="mx-1 h-5 w-px bg-border"></span>
+		<ul class="flex items-center gap-1">
+			{profile.socials.map((social) => (
+				<li>
+					<a
+						href={social.href}
+						target="_blank"
+						rel="me noopener"
+						aria-label={social.label}
+						title={social.label}
+						class="pressable grid size-9 place-items-center rounded-lg text-muted hover:bg-subtle hover:text-foreground"
+					>
+						<Icon name={social.icon} size={16} />
+					</a>
+				</li>
+			))}
+		</ul>
+	</div>
+</section>

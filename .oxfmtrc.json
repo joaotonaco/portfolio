@@ -1,0 +1,7 @@
+{
+	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"useTabs": true,
+	"printWidth": 100,
+	"ignorePatterns": ["pnpm-lock.yaml", "dist", ".astro"],
+	"astro": true
+}

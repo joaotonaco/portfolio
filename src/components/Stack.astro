@@ -1,0 +1,24 @@
+---
+import { stack } from "@/data/stack";
+import type { Locale } from "@/i18n/ui";
+import { useTranslations } from "@/i18n/utils";
+import Section from "./Section.astro";
+
+interface Props {
+	locale: Locale;
+	index: number;
+}
+
+const { locale, index } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<Section label={t("stack.label")} id="stack" index={index}>
+	<ul class="flex flex-wrap gap-2">
+		{stack.map((item) => (
+			<li class="rounded-md border border-border bg-subtle/50 px-2 py-1 font-mono text-xs text-muted">
+				{item}
+			</li>
+		))}
+	</ul>
+</Section>

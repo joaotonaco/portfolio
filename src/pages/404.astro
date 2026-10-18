@@ -1,0 +1,30 @@
+---
+import { defaultLocale, locales } from "@/i18n/ui";
+import { isLocale, localizedPath, useTranslations } from "@/i18n/utils";
+import Base from "@/layouts/Base.astro";
+
+const segment = Astro.url.pathname.split("/")[1];
+const locale = isLocale(segment) ? segment : defaultLocale;
+const t = useTranslations(locale);
+---
+
+<Base locale={locale} title={`404 · ${t("notFound.title")}`} description={t("meta.description")}>
+	<main class="mx-auto grid min-h-dvh w-full max-w-[640px] place-content-center gap-4 px-4 text-center">
+		<p class="font-mono text-xs tracking-wider text-muted uppercase" data-enter>
+			404
+		</p>
+		<h1 class="text-xl font-medium" data-enter style={{ "--i": 1 }}>
+			{t("notFound.title")}
+		</h1>
+		<div class="flex justify-center gap-2" data-enter style={{ "--i": 2 }}>
+			{locales.map((l) => (
+				<a
+					href={localizedPath(l)}
+					class="pressable rounded-lg border border-border px-3 py-1.5 text-sm text-muted hover:bg-subtle hover:text-foreground"
+				>
+					{useTranslations(l)("notFound.back")}
+				</a>
+			))}
+		</div>
+	</main>
+</Base>

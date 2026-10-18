@@ -1,0 +1,18 @@
+---
+import { defaultLocale } from "@/i18n/ui";
+import { isLocale } from "@/i18n/utils";
+
+export const prerender = false;
+
+const saved = Astro.cookies.get("locale")?.value;
+const locale = isLocale(saved) ? saved : (Astro.preferredLocale ?? defaultLocale);
+
+return new Response(null, {
+	status: 302,
+	headers: {
+		Location: `/${locale}/`,
+		Vary: "Accept-Language, Cookie",
+		"Cache-Control": "private, no-cache",
+	},
+});
+---

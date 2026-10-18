@@ -1,0 +1,190 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+	--background: oklch(0.99 0 0);
+	--foreground: oklch(0.2 0 0);
+	--muted: oklch(0.5 0 0);
+	--subtle: oklch(0.96 0 0);
+	--border: oklch(0.91 0 0);
+	--accent: oklch(0.6 0.15 250);
+	--graph-0: oklch(0.94 0 0);
+	--graph-1: oklch(0.82 0 0);
+	--graph-2: oklch(0.66 0 0);
+	--graph-3: oklch(0.48 0 0);
+	--graph-4: oklch(0.25 0 0);
+
+	color-scheme: light;
+}
+
+.dark {
+	--background: oklch(0.145 0 0);
+	--foreground: oklch(0.96 0 0);
+	--muted: oklch(0.65 0 0);
+	--subtle: oklch(0.2 0 0);
+	--border: oklch(0.26 0 0);
+	--accent: oklch(0.72 0.14 250);
+	--graph-0: oklch(0.22 0 0);
+	--graph-1: oklch(0.36 0 0);
+	--graph-2: oklch(0.52 0 0);
+	--graph-3: oklch(0.72 0 0);
+	--graph-4: oklch(0.95 0 0);
+
+	color-scheme: dark;
+}
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-muted: var(--muted);
+	--color-subtle: var(--subtle);
+	--color-border: var(--border);
+	--color-accent: var(--accent);
+	--font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+	--font-mono: "Geist Mono Variable", ui-monospace, monospace;
+}
+
+/* Stronger curves than Tailwind's defaults; also exposed as --ease-* on :root. */
+@theme {
+	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+	--ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+@layer base {
+	html {
+		background-color: var(--background);
+		color: var(--foreground);
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	body {
+		@apply bg-background font-sans text-foreground antialiased;
+		text-rendering: optimizeLegibility;
+	}
+
+	::selection {
+		background-color: color-mix(in oklch, var(--accent) 30%, transparent);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+		border-radius: 6px;
+	}
+}
+
+/* Disables every transition for one frame while the theme class swaps,
+   so colors change at once instead of fading piecemeal. The toggle keeps its icon morph. */
+.no-transitions *:not([data-theme-toggle], [data-theme-toggle] *) {
+	transition: none !important;
+}
+
+/* Press feedback for anything pressable. */
+.pressable {
+	transition-property: transform, background-color, color, border-color;
+	transition-duration: 160ms, 150ms, 150ms, 150ms;
+	transition-timing-function: var(--ease-out), ease, ease, ease;
+}
+
+.pressable:active {
+	transform: scale(0.97);
+}
+
+/* List rows: tint + nudge the arrow toward where the link goes. */
+.row {
+	transition: background-color 150ms ease;
+}
+
+.row-arrow {
+	transition:
+		transform 150ms var(--ease-out),
+		color 150ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.row:hover {
+		background-color: var(--subtle);
+	}
+
+	.row:hover .row-arrow {
+		color: var(--foreground);
+		transform: translate(2px, -2px);
+	}
+}
+
+/* One-shot entrance on first paint. --i sets the stagger step. */
+@keyframes enter {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+		filter: blur(4px);
+	}
+}
+
+[data-enter] {
+	animation: enter 500ms var(--ease-out) both;
+	animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+/* Client-side navigations (locale switch) skip the entrance. */
+[data-navigated] [data-enter] {
+	animation: none;
+}
+
+/* Locale switch: soft crossfade instead of text teleporting. */
+@keyframes vt-fade-out {
+	to {
+		opacity: 0;
+		filter: blur(2px);
+	}
+}
+
+@keyframes vt-fade-in {
+	from {
+		opacity: 0;
+		filter: blur(2px);
+	}
+}
+
+::view-transition-old(root) {
+	animation: vt-fade-out 160ms ease both;
+}
+
+::view-transition-new(root) {
+	animation: vt-fade-in 200ms ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	@keyframes enter-reduced {
+		from {
+			opacity: 0;
+		}
+	}
+
+	[data-enter] {
+		animation: enter-reduced 200ms ease both;
+	}
+
+	.pressable:active {
+		transform: none;
+	}
+
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: 120ms;
+		filter: none;
+	}
+
+	.motion-transform {
+		scale: none !important;
+		rotate: none !important;
+		filter: none !important;
+	}
+
+	.row:hover .row-arrow {
+		transform: none;
+	}
+}

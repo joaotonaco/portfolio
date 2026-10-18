@@ -1,0 +1,77 @@
+---
+import { ClientRouter } from "astro:transitions";
+import "@/styles/global.css";
+import { htmlLang, type Locale, locales } from "@/i18n/ui";
+import { localizedPath } from "@/i18n/utils";
+
+interface Props {
+	locale: Locale;
+	title: string;
+	description: string;
+	/** Path without the locale prefix, used for alternates. Omit on pages without translations. */
+	path?: string;
+}
+
+const { locale, title, description, path } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang={htmlLang[locale]}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="author" content="João Gabriel" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="canonical" href={canonical} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+		{path !== undefined &&
+			locales.map((l) => (
+				<link
+					rel="alternate"
+					hreflang={htmlLang[l]}
+					href={new URL(localizedPath(l, path), Astro.site)}
+				/>
+			))}
+		{path !== undefined && (
+			<link rel="alternate" hreflang="x-default" href={new URL(path, Astro.site)} />
+		)}
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:locale" content={htmlLang[locale].replace("-", "_")} />
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:creator" content="@jaootonaco" />
+		<meta name="theme-color" content="#fcfcfc" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+		<script is:inline>
+			(() => {
+				// oxlint-disable-next-line unicorn/consistent-function-scoping -- kept inside the IIFE to avoid globals
+				const apply = (doc) => {
+					let stored = null;
+					try {
+						stored = localStorage.getItem("theme");
+					} catch {}
+					const dark = stored
+						? stored === "dark"
+						: matchMedia("(prefers-color-scheme: dark)").matches;
+					doc.documentElement.classList.toggle("dark", dark);
+				};
+				apply(document);
+				if (window.__themeBound) return;
+				window.__themeBound = true;
+				document.addEventListener("astro:before-swap", (event) => {
+					apply(event.newDocument);
+					event.newDocument.documentElement.dataset.navigated = "";
+				});
+			})();
+		</script>
+		<ClientRouter fallback="none" />
+	</head>
+	<body class="min-h-dvh">
+		<slot />
+	</body>
+</html>

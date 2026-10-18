@@ -1,0 +1,35 @@
+---
+import { type Locale, locales } from "@/i18n/ui";
+import { localizedPath } from "@/i18n/utils";
+
+interface Props {
+	locale: Locale;
+	label: string;
+}
+
+const { locale, label } = Astro.props;
+const short: Record<Locale, string> = { en: "EN", "pt-br": "PT" };
+---
+
+<nav aria-label={label} class="flex items-center rounded-lg border border-border p-0.5">
+	{locales.map((l) => (
+		<a
+			href={localizedPath(l)}
+			hreflang={l}
+			lang={l}
+			data-locale-link={l}
+			aria-current={l === locale ? "page" : undefined}
+			class="pressable grid h-7 min-w-9 place-items-center rounded-md px-2 font-mono text-xs text-muted hover:text-foreground aria-[current=page]:bg-subtle aria-[current=page]:text-foreground"
+		>
+			{short[l]}
+		</a>
+	))}
+</nav>
+
+<script>
+	document.addEventListener("click", (event) => {
+		const link = (event.target as Element).closest<HTMLElement>("[data-locale-link]");
+		if (!link) return;
+		document.cookie = `locale=${link.dataset.localeLink}; path=/; max-age=31536000; samesite=lax`;
+	});
+</script>

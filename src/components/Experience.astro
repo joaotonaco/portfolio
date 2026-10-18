@@ -1,0 +1,52 @@
+---
+import { Image } from "astro:assets";
+import { experience } from "@/data/experience";
+import type { Locale } from "@/i18n/ui";
+import { formatMonth, useTranslations } from "@/i18n/utils";
+import Section from "./Section.astro";
+
+interface Props {
+	locale: Locale;
+	index: number;
+}
+
+const { locale, index } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<Section label={t("experience.label")} id="experience" index={index}>
+	<ul class="-mx-2 space-y-1">
+		{experience.map((job) => (
+			<li>
+				<a
+					href={job.url}
+					target="_blank"
+					rel="noopener"
+					class="row flex items-center gap-3 rounded-lg p-2"
+				>
+					<Image
+						src={job.logo}
+						alt=""
+						width={36}
+						height={36}
+						densities={[1, 2]}
+						class="size-9 shrink-0 rounded-lg border border-border"
+					/>
+					<div class="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+						<div class="min-w-0">
+							<p class="truncate text-sm font-medium">{job.company}</p>
+							<p class="truncate text-xs text-muted">{job.role[locale]}</p>
+						</div>
+						<div class="shrink-0 text-xs text-muted tabular-nums sm:text-right">
+							<p class="sm:text-sm sm:text-foreground">
+								{formatMonth(locale, job.start)} –{" "}
+								{job.end ? formatMonth(locale, job.end) : t("experience.present")}
+							</p>
+							<p class="hidden sm:block">{job.location[locale]}</p>
+						</div>
+					</div>
+				</a>
+			</li>
+		))}
+	</ul>
+</Section>

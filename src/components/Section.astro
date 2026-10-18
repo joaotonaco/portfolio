@@ -1,0 +1,22 @@
+---
+interface Props {
+	label: string;
+	index: number;
+	id?: string;
+}
+
+const { label, index, id } = Astro.props;
+const headingId = `${id ?? label.toLowerCase()}-heading`;
+---
+
+<section
+	aria-labelledby={headingId}
+	class="border-t border-border py-8"
+	data-enter
+	style={{ "--i": index }}
+>
+	<h2 id={headingId} class="mb-4 font-mono text-xs tracking-wider text-muted uppercase">
+		{label}
+	</h2>
+	<slot />
+</section>
