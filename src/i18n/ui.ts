@@ -12,7 +12,7 @@ export const htmlLang: Record<Locale, string> = {
 const en = {
 	"meta.title": "João Gabriel · Full-stack Engineer",
 	"meta.description":
-		"Full-stack engineer from Brazil building web products with TypeScript, React and Node.",
+		"Full-stack engineer from Brasil building web products with TypeScript, React and Node.",
 	"header.role": "Full-stack engineer",
 	"header.timeSame": "same as you",
 	"header.timeAhead": "{h} ahead of you",
@@ -22,7 +22,7 @@ const en = {
 	"hero.title": "I build web products end to end, from the database to the {highlight}.",
 	"hero.highlight": "last pixel",
 	"hero.intro":
-		"Hi, I'm João, a full-stack engineer from Brazil who cares about the details. Mostly in TypeScript land: React and Vite on the front, Node and Elysia on the back.",
+		"Hi, I'm João, a full-stack engineer from Brasil who cares about the details. Mostly in TypeScript land: React and Vite on the front, Node and Elysia on the back.",
 	"hero.basedIn": "Based in",
 	"hero.place": "Goiânia, BR",
 	"hero.currently": "Currently",
