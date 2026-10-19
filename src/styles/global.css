@@ -202,6 +202,20 @@
 		0 18px 36px -10px oklch(0 0 0 / 0.3);
 }
 
+.sticker-ghost {
+	position: absolute;
+	inset: 0;
+	/* Same layer as the resting sticker, but earlier in the DOM, so it stays underneath. */
+	z-index: 1;
+	box-shadow: none;
+	pointer-events: none;
+	transition: none;
+}
+
+.dark .sticker-ghost {
+	box-shadow: none;
+}
+
 @media (hover: hover) and (pointer: fine) {
 	.sticker:not([data-dragging]):hover {
 		transform: rotate(-4deg) scale(1.04);
