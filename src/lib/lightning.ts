@@ -75,27 +75,77 @@ function zigzag(from: Point, to: Point, width: number): Zigzag {
 			i === 0 || i === steps ? 0 : (i % 2 ? side : -side) * random(14, 30) * (width / 14);
 		spine.push({ x: from.x + dx * along + nx * swing, y: from.y + dy * along + ny * swing });
 	}
-	const boil = Array.from({ length: 3 }, () =>
+	return { spine, boil: wobbles(spine), width };
+}
+
+const wobbles = (spine: Point[]) =>
+	Array.from({ length: 3 }, () =>
 		spine.map((_, i) => (i === 0 ? { x: 0, y: 0 } : { x: random(-3, 3), y: random(-3, 3) })),
 	);
-	return { spine, boil, width };
+
+/**
+ * A wandering channel like a real bolt: uneven steps, a heading that drifts but keeps
+ * getting pulled back toward `angle`, and the odd sharp kink.
+ */
+function meander(from: Point, angle: number, length: number, width: number): Zigzag {
+	const spine = [from];
+	let heading = angle;
+	let travelled = 0;
+	while (travelled < length) {
+		const step = random(24, 95);
+		heading += random(-0.5, 0.5) + (angle - heading) * 0.4;
+		const kink = Math.random() < 0.2 ? random(-1.1, 1.1) : 0;
+		const last = spine[spine.length - 1];
+		spine.push({
+			x: last.x + Math.cos(heading + kink) * step,
+			y: last.y + Math.sin(heading + kink) * step,
+		});
+		travelled += step;
+	}
+	return { spine, boil: wobbles(spine), width };
+}
+
+/** Forks peel off the channel in its direction of travel, sometimes splitting once more. */
+function fork(parts: Zigzag[], parent: Zigzag, length: number, depth: number) {
+	const { spine } = parent;
+	const count = depth === 0 ? Math.round(random(2, 5)) : Math.random() < 0.4 ? 1 : 0;
+	for (let f = 0; f < count; f++) {
+		const i = Math.floor(random(1, spine.length - 2));
+		const a = spine[i];
+		const b = spine[i + 1];
+		const heading = Math.atan2(b.y - a.y, b.x - a.x);
+		const left = 1 - i / spine.length;
+		const child = meander(
+			a,
+			heading + random(0.3, 1) * (Math.random() < 0.5 ? -1 : 1),
+			length * left * random(0.2, 0.5),
+			parent.width * random(0.4, 0.6),
+		);
+		parts.push(child);
+		if (depth === 0) fork(parts, child, length * left * 0.5, 1);
+	}
 }
 
 function makeBolt(origin: Point, angle: number, born: number, w: number, h: number): Bolt {
 	const length = reach(origin, angle, w, h) * random(1.05, 1.2);
-	const end = { x: origin.x + Math.cos(angle) * length, y: origin.y + Math.sin(angle) * length };
-	const main = zigzag(origin, end, 14);
+	const main = meander(origin, angle, length, random(10, 16));
 	const parts = [main];
-	const forks = Math.round(random(1, 3));
-	for (let f = 0; f < forks; f++) {
-		const at = main.spine[Math.floor(random(1, main.spine.length - 1))];
-		const turn = angle + random(0.5, 0.9) * (Math.random() < 0.5 ? -1 : 1);
-		const reachOut = length * random(0.18, 0.35);
-		parts.push(
-			zigzag(at, { x: at.x + Math.cos(turn) * reachOut, y: at.y + Math.sin(turn) * reachOut }, 7),
-		);
-	}
+	fork(parts, main, length, 0);
 	return { parts, born };
+}
+
+/** `count` random directions, kept a little apart so bolts don't stack on each other. */
+function scatter(count: number) {
+	const angles: number[] = [];
+	for (let tries = 0; angles.length < count && tries < 200; tries++) {
+		const angle = random(0, Math.PI * 2);
+		const near = angles.some((other) => {
+			const gap = Math.abs(angle - other) % (Math.PI * 2);
+			return Math.min(gap, Math.PI * 2 - gap) < 0.4;
+		});
+		if (!near) angles.push(angle);
+	}
+	return angles;
 }
 
 /** The stretch of a polyline between fractions `from` and `to` of its vertex run. */
@@ -299,11 +349,7 @@ export function strike(origin: Point) {
 
 	function spawn(wave: number, now: number) {
 		const { count } = WAVES[wave];
-		const turn = Math.random() * Math.PI * 2;
-		for (let i = 0; i < count; i++) {
-			const angle = turn + (i / count) * Math.PI * 2 + random(-0.3, 0.3);
-			bolts.push(makeBolt(origin, angle, now, w, h));
-		}
+		for (const angle of scatter(count)) bolts.push(makeBolt(origin, angle, now, w, h));
 		if (wave === WAVES.length - 1) {
 			for (let i = 0; i < 9; i++) {
 				const a = (i / 9) * Math.PI * 2 + random(-0.2, 0.2);
